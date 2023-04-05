@@ -1,5 +1,6 @@
 const { Book } = require("@models");
 const { sendError } = require("@utils/ErrorMessage");
+const { sendSuccess } = require("@utils/SendSuccess");
 
 const save = async (req, res) => {
   // Saves book into the database.
@@ -23,7 +24,7 @@ const findAllBooks = async (req, res) => {
   // Fetch all books from books table
   try {
     const data = await Book.findAll();
-    return res.send({ status: 200, data });
+    sendSuccess(res,200,"",data)
   } catch (error) {
     sendError(res, 404, error.message);
   }
@@ -42,10 +43,7 @@ const updateBook = async (req, res) => {
         },
       }
     );
-    return res.json({
-      status: 200,
-      message: `successfully updated! `,
-    });
+    sendSuccess(res,200,"successfully updated!")
   } catch (error) {
     sendError(res, 404, error.message);
   }
@@ -60,10 +58,8 @@ const deleteBook = async (req, res) => {
         id: id,
       },
     });
-    return res.json({
-      status: 200,
-      message: `successfully Deleted! `,
-    });
+    sendSuccess(res,200,"successfully Deleted!")
+    
   } catch (error) {
     sendError(res, 404, error.message);
   }

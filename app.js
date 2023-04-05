@@ -20,10 +20,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to nodejs application." });
 });
 
-// import your routes middleware
+// import routes middleware
 const routes = require("./routes");
 
-// use your routes middleware
+// use routes middleware
 app.use("/api", routes);
 
 const PORT = process.env.PORT || 8000;
