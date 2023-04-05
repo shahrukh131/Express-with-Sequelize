@@ -13,7 +13,8 @@
     "@root": ".",
     "@controllers": "./controllers",
     "@models": "./models",
-    "@routes": "./routes"
+    "@routes": "./routes",
+    "@utils":"./utils"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",

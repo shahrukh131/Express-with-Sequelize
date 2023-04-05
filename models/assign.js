@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Assign.init(
     {
       bookId: {
-        type: "DataTypes.INTEGER",
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: "books",
