@@ -1,7 +1,13 @@
 const { Book } = require("@models");
 const { sendError } = require("@utils/ErrorMessage");
 const { sendSuccess } = require("@utils/SendSuccess");
-const { getData, createData, updatedData, deletedData } = require("../utils/GenericMethods");
+const {
+  getData,
+  createData,
+  updatedData,
+  deletedData,
+  getPaginatedData,
+} = require("../utils/GenericMethods");
 
 const save = async (req, res) => {
   //* Saves book into the database.
@@ -18,6 +24,19 @@ const findAllBooks = async (req, res) => {
   //* Fetch all books from books table
   try {
     const data = await getData(Book);
+    sendSuccess(res, 200, "Successfully Fetched", data);
+  } catch (error) {
+    sendError(res, 404, error.message);
+  }
+};
+
+const findAllPaginatedBooks = async (req, res) => {
+  try {
+    let query = req.query;
+    query.limit = parseInt(query.limit, 10) || 10;
+    query.page = parseInt(query.page, 10)  || 1;
+    query.offset = query.limit * (query.page - 1);
+    const data = await getPaginatedData(Book, { ...query });
     sendSuccess(res, 200, "Successfully Fetched", data);
   } catch (error) {
     sendError(res, 404, error.message);
@@ -61,4 +80,11 @@ const deleteBook = async (req, res) => {
   }
 };
 
-module.exports = { save, findAllBooks, updateBook, deleteBook, findBookById };
+module.exports = {
+  save,
+  findAllBooks,
+  updateBook,
+  deleteBook,
+  findBookById,
+  findAllPaginatedBooks,
+};

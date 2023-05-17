@@ -6,6 +6,14 @@ const getData = async (modelName, filter, includes) => {
   return data;
 };
 
+const getPaginatedData = async (modelName, filter, includes) => {
+  const data = await modelName.findAndCountAll({
+    ...filter,
+    include: includes ? includes : null,
+  });
+  return data;
+};
+
 const createData = async (modelName, data) => {
   const res = await modelName.create(data);
   return res;
@@ -24,4 +32,10 @@ const deletedData = async (modelName, filter, newData) => {
   return res;
 };
 
-module.exports = { getData, createData, updatedData, deletedData };
+module.exports = {
+  getData,
+  createData,
+  updatedData,
+  deletedData,
+  getPaginatedData,
+};
