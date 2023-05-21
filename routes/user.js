@@ -2,6 +2,7 @@ const express = require("express");
 const {
   save,
   findAllUsers,
+  findAllPaginatedUsers,
   findUserById,
   updateUser,
   deleteUser,
@@ -9,7 +10,7 @@ const {
 const route = express.Router();
 
 // Users Routes
-route.route("/").post(save).get(findAllUsers);
+route.route("/").post(save).get(findAllPaginatedUsers);
 route.route("/:id").put(updateUser).get(findUserById).delete(deleteUser);
 
 module.exports = route;
