@@ -9,6 +9,7 @@ const {
   deletedData,
   getPaginatedData,
 } = require("../utils/GenericMethods");
+const { Op } = require("sequelize");
 
 const save = async (req, res) => {
   //* Saves user into the database.
@@ -41,9 +42,16 @@ const findAllUsers = async (req, res) => {
 const findAllPaginatedUsers = async (req, res) => {
   try {
     let query = req.query;
+    let filterKey = query.key
     query.limit = parseInt(query.limit, 10) || 10;
     query.page = parseInt(query.page, 10)  || 1;
     query.offset = query.limit * (query.page - 1);
+    query.where = {
+      [filterKey]: {
+        [Op.like]: `%${query.key}%`,
+      },
+    }
+    
     const data = await getPaginatedData(User, { ...query });
     sendSuccess(res, 200, "Successfully Fetched", data);
   } catch (error) {
