@@ -1,6 +1,7 @@
 const { User } = require("@models");
 const { sendError } = require("@utils/ErrorMessage");
 const { sendSuccess } = require("@utils/SendSuccess");
+const bcrypt = require("bcrypt");
 const {
   getData,
   createData,
@@ -12,8 +13,15 @@ const {
 const save = async (req, res) => {
   //* Saves user into the database.
   const { email, firstName, lastName, password, age } = req.body;
+  const newData = {
+    firstName,
+    lastName,
+    email,
+    password: await bcrypt.hash(password, 10),
+    age
+  }
   try {
-    const data = await createData(User, { email, firstName, lastName, age });
+    const data = await createData(User, newData);
     sendSuccess(res, 200, "Successfully Created", data);
   } catch (error) {
     sendError(res, 500, error.message);
@@ -61,7 +69,7 @@ const updateUser = async (req, res) => {
     const data = await updatedData(
       User,
       { id: id },
-      { email, firstName, lastName, password, age }
+      { email, firstName, lastName, password:await bcrypt.hash(password, 10), age }
     );
     sendSuccess(res, 200, "successfully updated!");
   } catch (error) {
