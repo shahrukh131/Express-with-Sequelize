@@ -22,6 +22,12 @@ const save = async (req, res) => {
     age,
   };
   try {
+    const existing = await User.findOne({where:{
+      email:newData.email
+    }});
+    // if(existing && Object.keys(existing).length > 0 ){
+    //   sendError(res, 403, "the Email is already exist");
+    // }
     const data = await createData(User, newData);
     sendSuccess(res, 200, "Successfully Created", data);
   } catch (error) {

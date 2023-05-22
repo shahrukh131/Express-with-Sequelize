@@ -7,6 +7,7 @@ const {
   updateUser,
   deleteUser,
 } = require("@controllers/UserController");
+const { userValidator } = require("@validations/user");
 const route = express.Router();
 
 // Users Routes
