@@ -7,12 +7,11 @@ const getData = async (modelName, filter, includes) => {
 };
 
 const getPaginatedData = async (modelName, filter, includes) => {
-  console.log(filter);
-  // const data = await modelName.findAndCountAll({
-  //   ...filter,
-  //   include: includes ? includes : null,
-  // });
-  // return data;
+  const data = await modelName.findAndCountAll({
+    ...filter,
+    include: includes ? includes : null,
+  });
+  return data;
 };
 
 const createData = async (modelName, data) => {

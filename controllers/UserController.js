@@ -19,8 +19,8 @@ const save = async (req, res) => {
     lastName,
     email,
     password: await bcrypt.hash(password, 10),
-    age
-  }
+    age,
+  };
   try {
     const data = await createData(User, newData);
     sendSuccess(res, 200, "Successfully Created", data);
@@ -42,16 +42,24 @@ const findAllUsers = async (req, res) => {
 const findAllPaginatedUsers = async (req, res) => {
   try {
     let query = req.query;
-    let filterKey = query.key
     query.limit = parseInt(query.limit, 10) || 10;
-    query.page = parseInt(query.page, 10)  || 1;
+    query.page = parseInt(query.page, 10) || 1;
     query.offset = query.limit * (query.page - 1);
     query.where = {
-      [filterKey]: {
-        [Op.like]: `%${query.key}%`,
-      },
-    }
-    
+      [Op.or]: [
+        {
+          firstName: {
+            [Op.like]: `%${query.key}%`,
+          },
+        },
+        {
+          lastName: {
+            [Op.like]: `%${query.key}%`,
+          },
+        },
+      ],
+    };
+
     const data = await getPaginatedData(User, { ...query });
     sendSuccess(res, 200, "Successfully Fetched", data);
   } catch (error) {
@@ -77,7 +85,13 @@ const updateUser = async (req, res) => {
     const data = await updatedData(
       User,
       { id: id },
-      { email, firstName, lastName, password:await bcrypt.hash(password, 10), age }
+      {
+        email,
+        firstName,
+        lastName,
+        password: await bcrypt.hash(password, 10),
+        age,
+      }
     );
     sendSuccess(res, 200, "successfully updated!");
   } catch (error) {
