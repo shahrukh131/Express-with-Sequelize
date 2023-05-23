@@ -32,6 +32,7 @@ const deletedData = async (modelName, filter, newData) => {
   return res;
 };
 
+
 module.exports = {
   getData,
   createData,

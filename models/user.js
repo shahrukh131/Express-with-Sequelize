@@ -16,7 +16,25 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type:DataTypes.STRING,
+      allowNull:false,
+      unique: {
+        args: true,
+        msg: 'The Email must be unique.', // Custom error message
+      },
+      validate: {
+        notNull: {
+          msg: 'Please enter your email'
+        },
+        isUnique: async function (value) {
+          const user = await User.findOne({ where: { email: value } });
+          if (user) {
+            throw new Error('The Email is already used.'); // Custom error message
+          }
+        },
+      }
+    },
     password: DataTypes.STRING,
     age: DataTypes.INTEGER
   }, {

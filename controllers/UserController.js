@@ -1,7 +1,7 @@
 const { User } = require("@models");
 const { sendError } = require("@utils/ErrorMessage");
 const { sendSuccess } = require("@utils/SendSuccess");
-const bcrypt = require("bcrypt");
+
 const {
   getData,
   createData,
@@ -10,28 +10,29 @@ const {
   getPaginatedData,
 } = require("../utils/GenericMethods");
 const { Op } = require("sequelize");
+const { generateHashedPassword } = require("../utils/GenerateHash");
 
 const save = async (req, res) => {
   //* Saves user into the database.
   const { email, firstName, lastName, password, age } = req.body;
-  const newData = {
-    firstName,
-    lastName,
-    email,
-    password: await bcrypt.hash(password, 10),
-    age,
-  };
+  let statusCode = 200;
   try {
-    const existing = await User.findOne({where:{
-      email:newData.email
-    }});
-    // if(existing && Object.keys(existing).length > 0 ){
-    //   sendError(res, 403, "the Email is already exist");
-    // }
+    const newData = {
+      firstName,
+      lastName,
+      email,
+      password: await generateHashedPassword(password),
+      age,
+    };
+ 
     const data = await createData(User, newData);
-    sendSuccess(res, 200, "Successfully Created", data);
+    sendSuccess(res, statusCode, "Successfully Created", data);
   } catch (error) {
-    sendError(res, 500, error.message);
+    if (error?.name == "SequelizeValidationError") {
+      statusCode = 403
+    }
+
+    sendError(res, statusCode, error.message);
   }
 };
 
@@ -95,7 +96,7 @@ const updateUser = async (req, res) => {
         email,
         firstName,
         lastName,
-        password: await bcrypt.hash(password, 10),
+        password: await generateHashedPassword(password),
         age,
       }
     );
