@@ -3,10 +3,37 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const app = express();
-
+const { Sequelize } = require("sequelize");
+const dbConfig = require("./config/config.js");
+const logger = require("@utils/logger");
 let corsOptions = {
   origin: "https://localhost:8081",
 };
+
+
+
+const sequelize = new Sequelize(
+  dbConfig.development.database,
+  dbConfig.development.username,
+  dbConfig.development.password,
+  {
+    host: dbConfig.development.host,
+    dialect: dbConfig.development.dialect,
+    logging: false, // Optional: Disable logging of SQL queries
+  }
+);
+
+/**
+ ** Check the database connection
+ */
+sequelize.authenticate()
+  .then(() => {
+    logger.info('Database connection has been established successfully.'); 
+  })
+  .catch((error) => {
+    logger.error('Unable to connect to the database:', error); 
+    process.exit(1); 
+  });
 
 /**
  ** Middleware
@@ -28,6 +55,7 @@ app.use("/api", routes);
 
 const PORT = process.env.PORT || 8000;
 
+
 app.listen(PORT, () => {
-  console.log(`Server running at PORT ${PORT}`);
+  logger.info(`Server running at PORT ${PORT}`)
 });
